@@ -1,0 +1,3 @@
+interface:
+  display_name: "Bilingual-exampass"
+  short_description: "将课件整理为详细中英对照笔记，可选纯笔记PDF、完整HTML或两者。"

@@ -1,0 +1,41 @@
+{
+  "page_title": "Chapter Quiz",
+  "section": {
+    "choice": "1. Multiple-Choice",
+    "multi": "2. Multiple-Select",
+    "tf": "3. True or False",
+    "fill": "4. Fill in the Blank",
+    "short": "5. Short Answer",
+    "calc": "6. Calculation",
+    "code": "7. Coding",
+    "essay": "8. Essay",
+    "comprehensive": "9. Comprehensive"
+  },
+  "section_order": [
+    "choice",
+    "multi",
+    "tf",
+    "fill",
+    "short",
+    "calc",
+    "code",
+    "essay",
+    "comprehensive"
+  ],
+  "points_suffix": "pts",
+  "true_label": "True",
+  "false_label": "False",
+  "placeholder": "Type your answer here...",
+  "code_placeholder": "Write your code here...",
+  "pitfall_prefix": "Common pitfall: ",
+  "correct_label": "Correct",
+  "wrong_label": "Incorrect",
+  "partial_label": "Partially correct",
+  "answer_prefix": "Correct answer: ",
+  "reference_label": "Reference answer",
+  "graded_label": "Graded",
+  "grade_button": "Submit and grade",
+  "score_label": "Score",
+  "duration_prefix": "100 points | Suggested time: ",
+  "duration_suffix": " minutes | Select your answers, then submit."
+}

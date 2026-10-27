@@ -1,0 +1,14 @@
+__pycache__/
+.pytest_cache/
+*.pyc
+*.pyo
+*.pdf
+*.pptx
+*.docx
+*.doc
+_对话记录_不上传GitHub/
+.env
+.env.*
+!.env.example
+.epa_work/
+EPA/
