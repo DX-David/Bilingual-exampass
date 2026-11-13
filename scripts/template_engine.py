@@ -10,6 +10,7 @@ Architecture:
 
 import os
 import json
+from uuid import uuid4
 from html import escape as _html_escape, unescape as _html_unescape
 
 try:
@@ -44,12 +45,21 @@ _MATHJAX_SCRIPT = (
 )
 
 
-def _build_page(title, body_html, css_extra='', js_extra=''):
+def _build_page(title, body_html, css_extra='', js_extra='', editable_notes=False):
     """Fill the page template. JS goes AFTER body -- critical for DOM access."""
     css = _read('base.css') + '\n' + css_extra
+    note_metadata = ''
+    if editable_notes:
+        note_metadata = (
+            f'<meta name="epa-note-id" content="{uuid4()}">\n'
+            f'<meta name="epa-note-revision" content="{uuid4()}">'
+        )
+        css += '\n' + _read('note_editor.css')
+        js_extra += '\n<script id="epa-note-editor-script">\n' + _read('note_editor.js') + '\n</script>'
     return (
         _PAGE_TEMPLATE
-        .replace('__TITLE__', title)
+        .replace('__TITLE__', _html_escape(title))
+        .replace('__NOTE_METADATA__', note_metadata)
         .replace('__MATHJAX_CONFIG__', _MATHJAX_CONFIG)
         .replace('__MATHJAX_SCRIPT__', _MATHJAX_SCRIPT)
         .replace('__CSS__', css)
@@ -232,6 +242,10 @@ body { max-width: 2400px; width: 96vw; padding-left: 2vw; padding-right: 2vw; }
   .kn-layout { flex-direction: column; align-items: stretch; gap: 16px; }
   .kn-main { flex: none; width: 100%; }
   .kn-rail { position: static; flex: none; max-width: 100%; width: 100%; min-width: 0; max-height: none; }
+}
+@media print {
+  [data-epa-print-notes] :is(.kn-rail, #epa-lightbox) { display: none !important; }
+  [data-epa-print-notes] :is(.kn-layout, .kn-main) { display: block; overflow: visible; width: auto; }
 }
 """
 
@@ -422,6 +436,7 @@ def _knowledge_body(body_html, title, slides=None, kcs=None, add_h1=True):
     body_html = _inject_heading_chips(body_html, slides)
     body_html = structure_notes(body_html)
     body_html = _auto_toc_and_title(body_html, title if add_h1 else '')
+    body_html = _read('note_editor.html') + body_html
 
     css_extra = _read('notes.css')
     js_extra = ''
@@ -446,7 +461,7 @@ def save_knowledge_html(body_html, output_path, title, slides=None, kcs=None):
     so existing notes get the click-to-locate links without re-running agents.
     """
     body_html, css_extra, js_extra = _knowledge_body(body_html, title, slides, kcs)
-    html = _build_page(title, body_html, css_extra=css_extra, js_extra=js_extra)
+    html = _build_page(title, body_html, css_extra=css_extra, js_extra=js_extra, editable_notes=True)
     out_dir = os.path.dirname(output_path)
     if out_dir:
         os.makedirs(out_dir, exist_ok=True)
@@ -666,7 +681,7 @@ def save_combined_html(body_html, questions, output_path, title,
     test_body, test_js = _test_body_and_js(questions, title, subtitle, duration_minutes, add_h1=False)
 
     body = (
-        '<h1>' + title + '</h1>'
+        '<h1>' + _html_escape(title) + '</h1>'
         '<div id="epa-tabs" class="no-print">'
         '<button class="tab-btn active" data-tab="kn">📖 Study Notes</button>'
         '<button class="tab-btn" data-tab="test">📝 Chapter Quiz</button>'
@@ -681,7 +696,7 @@ def save_combined_html(body_html, questions, output_path, title,
     # Expose the formula-fit helper globally so tab-switch can re-run it.
     js_extra = js_extra.replace('function __epaFitFormulas(', 'window.__epaFitFormulas = function __epaFitFormulas(')
 
-    html = _build_page(title, body, css_extra=css_extra, js_extra=js_extra)
+    html = _build_page(title, body, css_extra=css_extra, js_extra=js_extra, editable_notes=True)
     out_dir = os.path.dirname(output_path)
     if out_dir:
         os.makedirs(out_dir, exist_ok=True)

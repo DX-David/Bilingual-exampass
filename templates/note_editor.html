@@ -1,0 +1,32 @@
+<div id="epa-note-editor" class="no-print" aria-label="笔记编辑工具">
+  <div class="epa-editor-dock">
+    <div class="epa-editor-actions">
+      <button type="button" data-action="toggle" aria-pressed="false">编辑笔记</button>
+      <button type="button" data-action="save">保存到原文件</button>
+      <button type="button" data-action="download">另存为 HTML</button>
+      <button type="button" data-action="print">导出 PDF</button>
+      <button type="button" data-action="add-first" hidden>添加小节</button>
+      <button type="button" data-action="undo" hidden>撤销删除</button>
+      <span data-editor-dirty hidden>未保存</span>
+    </div>
+    <div data-editor-status role="status"></div>
+  </div>
+  <div data-editor-selection role="group" aria-label="所选文字" hidden>
+    <button type="button" data-action="highlight">高亮</button>
+    <button type="button" data-action="unhighlight">取消高亮</button>
+    <button type="button" data-action="comment">添加批注</button>
+  </div>
+  <dialog data-editor-dialog aria-labelledby="epa-editor-dialog-title">
+    <form>
+      <h2 id="epa-editor-dialog-title"></h2>
+      <p data-dialog-message></p>
+      <label data-dialog-title hidden>标题<input name="heading" required></label>
+      <label data-dialog-body hidden><span></span><textarea name="body" rows="5"></textarea></label>
+      <div class="epa-editor-actions">
+        <button type="submit" data-dialog-submit></button>
+        <button type="button" data-dialog-delete hidden>删除批注</button>
+        <button type="button" data-dialog-close>取消</button>
+      </div>
+    </form>
+  </dialog>
+</div>

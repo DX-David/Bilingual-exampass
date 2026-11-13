@@ -4,7 +4,7 @@
 
 Bilingual-exampass 是面向 Codex 的课程复习技能。提供 PPTX、Word（DOCX）或 PDF 课件后，它会按章节梳理知识结构，结合原文、图表和备注编写详细笔记，再按需要生成平板批注用 PDF、带原课件对照和英文测验的 HTML，以及知识图谱、期末模拟试卷和批改报告。
 
-[English](README.md) · [技能执行规则](SKILL.md) · [GitHub 仓库](https://github.com/DX-David/Bilingual-exampass)
+[技能执行规则](SKILL.md) · [GitHub 仓库](https://github.com/DX-David/Bilingual-exampass)
 
 ## 适合谁使用
 
@@ -24,6 +24,18 @@ Bilingual-exampass 是面向 Codex 的课程复习技能。提供 PPTX、Word（
 | **两者都要** | 同一份笔记正文分别导出以上两种结果 | PDF + HTML，兼顾手写批注和互动复习 |
 
 已经明确选择时会直接执行；同一批课件沿用所选模式。两种文件共用同一份笔记正文，保持知识点、术语和讲解深度一致。
+
+## 试用 HTML 编辑与导出
+
+第一次使用可以看[快速上手说明](QUICK_START_CN.md)。
+
+用 Chrome 或 Edge 打开[示例笔记](examples/01%20Rates%20of%20change.html)。[已编辑的示例副本](examples/01%20Rates%20of%20change-副本.html)展示了正文修改、新增小节、高亮和批注。
+
+笔记工具栏固定在屏幕左侧，滚动时可随时保存和导出。窄屏上，工具栏移到屏幕底部。
+
+- 点「编辑笔记」修改正文和标题，增删小节，或选中文字添加高亮和批注。目录随标题和小节更新。
+- 点「保存到原文件」并选择当前 HTML 来写回，或点「另存为 HTML」下载可继续编辑的副本。
+- 点「导出 PDF」预览当前笔记的 A4 版式。预览会展开自测参考答案，保留底色和高亮，隐藏课件栏、测验以及浏览器自动添加的页眉页脚。将打印目标设为「另存为 PDF」后保存。
 
 ## 核心功能
 

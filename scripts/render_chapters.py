@@ -8,6 +8,12 @@ Usage: python scripts/render_chapters.py <target_dir> [full|key|none]
 """
 
 import sys, os, json
+import base64
+import mimetypes
+import re
+from pathlib import Path
+from urllib.parse import unquote, urlsplit
+from urllib.request import url2pathname
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from slide_renderer import build_chapter_slides
@@ -46,7 +52,7 @@ def main(target_dir, density='key'):
             print(f'[skip] {ch_label}: missing notes or questions')
             continue
 
-        note = open(note_path, encoding='utf-8').read()
+        note = _embed_local_images(Path(note_path).read_text(encoding='utf-8'), Path(note_path).parent)
         qd = json.load(open(q_path, encoding='utf-8-sig'))
         questions = qd.get('questions', qd if isinstance(qd, list) else [])
 
@@ -72,6 +78,32 @@ def main(target_dir, density='key'):
     print(f'\nRendered {len(made)} combined pages -> {epa_dir}')
 
 
+def _embed_local_images(note, source_dir):
+    """Embed local note illustrations alongside the already embedded slide rail."""
+    def replace_src(match):
+        prefix, quote, src = match.groups()
+        path = Path(src)
+        if not path.is_absolute():
+            url = urlsplit(src)
+            if url.scheme == 'file':
+                path = Path(url2pathname(url.path))
+            elif url.scheme or url.netloc:
+                return match.group()
+            else:
+                path = source_dir / unquote(url.path)
+        media_type, _ = mimetypes.guess_type(path)
+        if not media_type or not media_type.startswith('image/'):
+            return match.group()
+        try:
+            encoded = base64.b64encode(path.read_bytes()).decode('ascii')
+        except OSError:
+            return match.group()
+        return f'{prefix}{quote}data:{media_type};base64,{encoded}{quote}'
+
+    return re.sub(r"""(<img\b[^>]*?\s+src\s*=\s*)(["'])(.*?)\2""", replace_src, note,
+                  flags=re.IGNORECASE | re.DOTALL)
+
+
 def _find(d, label, ext):
     """Find a file by chapter label or by a chN id fallback."""
     if not os.path.isdir(d):
@@ -80,7 +112,6 @@ def _find(d, label, ext):
     if os.path.exists(cand):
         return cand
     # fallback: any file whose stem matches a number in the label
-    import re
     m = re.match(r'\s*(\d+)', label)
     if m:
         cid = 'ch' + m.group(1)
